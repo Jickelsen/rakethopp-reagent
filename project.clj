@@ -26,5 +26,8 @@
                            ;; minimal JS optimization directive
                            :optimizations :whitespace
 
+                           ;; let's not forget to include React
+                           :preamble ["reagent/react.js"]
+
                            ;; generated JS code prettyfication
                            :pretty-print true}}]})
