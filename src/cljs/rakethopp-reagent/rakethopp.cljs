@@ -4,10 +4,10 @@
 
 (enable-console-print!)
 
-(defn sub-headers []
+(defn sub-headers [num]
   [:div
    [:h4 "Subheading 1"]
-   [:p "Subheading text"]
+   [:p (str "Subheading text " num)]
    [:h4 "Subheading 2"]
    [:p "Subheading text"]
    [:h4 "Subheading 3"]
@@ -18,10 +18,10 @@
    [:div.jumbotron
     [:h1 "Jumbotron heading rawr"]]
    [:div.row
-    [:div.col-md-6
-     [sub-headers]]
-    [:div.col-md-6
-     [sub-headers]]]])
+    [:div.col-sm-6
+     [sub-headers 1]]
+    [:div.col-sm-6
+     [sub-headers 2]]]])
 
 (defn simple-component []
   [:div

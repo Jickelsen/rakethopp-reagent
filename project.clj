@@ -1,5 +1,5 @@
 (defproject rakethopp-reagent "0.1.0-SNAPSHOT"
-  :description "My portfolio page based on ClojureScript and Dan Holmsand's Reagent. Email jickelsen@rakethopp.se/jacobmi@tii.se or send a tweet to @jickelsen."
+  :description "My personal portfolio page made with ClojureScript and Dan Holmsand's Reagent. Email jickelsen@rakethopp.se/jacobmi@tii.se or send a tweet to @jickelsen."
   :url "http://rakethopp.se"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
@@ -22,6 +22,7 @@
                 ;; Google Closure (CLS) options configuration
                 :compiler {;; CLS generated JS script filename
                            :output-to "resources/public/js/rakethopp.js"
+                           :output-dir "resources/public/js/out"
 
                            ;; minimal JS optimization directive
                            :optimizations :whitespace
@@ -30,4 +31,7 @@
                            :preamble ["reagent/react.js"]
 
                            ;; generated JS code prettyfication
-                           :pretty-print true}}]})
+                           :pretty-print true
+
+                           ;; source maps are cool
+                           :source-map "resources/public/js/rakethopp.js.map"}}]})

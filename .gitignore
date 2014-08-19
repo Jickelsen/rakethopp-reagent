@@ -1,5 +1,7 @@
 /doc
 /test
+out/
+*.map
 /target
 /classes
 /checkouts
