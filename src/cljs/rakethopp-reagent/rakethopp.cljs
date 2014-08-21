@@ -1,35 +1,72 @@
 (ns rakethopp-reagent.rakethopp
-  (:require [clojure.string :as string]
-            [reagent.core :as r :refer [atom]]))
+  (:require [rakethopp-reagent.session :as session]
+            [clojure.string :as string]
+            [reagent.core :as r :refer [atom]]
+            [secretary.core :as secretary :refer [dispatch!]]
+            [secretary.core :include-macros true :refer-macros [defroute]]
+            [goog.events :as events]
+            [goog.history.EventType :as EventType])
+  (:import goog.History))
 
 (enable-console-print!)
 
-(defn sub-headers [num]
+(defn empty-section []
+  [:div])
+
+(defn games-section []
   [:div
-   [:h4 "Subheading 1"]
-   [:p (str "Subheading text " num)]
-   [:h4 "Subheading 2"]
-   [:p "Subheading text"]
-   [:h4 "Subheading 3"]
-   [:p "Subheading text"]])
+   [:i "Some stuff about games"]])
+
+(defn ixd-section []
+  [:div
+   [:i "Some stuff about IxD"]])
+
+(defn about-section []
+  [:div
+   [:i "Some stuff about me!"]])
+
+(defroute "/" []
+  (session/put! :current-page empty-section))
+
+(defroute "/games" []
+  (session/put! :current-page games-section))
+
+(defroute "/ixd" []
+  (session/put! :current-page ixd-section))
+
+(defroute "/about" []
+  (session/put! :current-page about-section))
+
+(def current-page (atom nil))
+
+(defn page []
+  [(session/get :current-page)])
 
 (defn bs-main []
   [:div.container
    [:div.jumbotron
-    [:h1 "Jumbotron heading rawr"]]
-   [:div.row
-    [:div.col-sm-6
-     [sub-headers 1]]
-    [:div.col-sm-6
-     [sub-headers 2]]]])
+    [page]
+    [:div.row
+     [:div.col-sm-4
+      [:a {:href "#games" :on-click #(dispatch! "/games")}
+       [:h2 "games"]]]
+     [:div.col-sm-4
+      [:a {:href "#ixd" :on-click #(dispatch! "/ixd")}
+       [:h2 "interaction"]]]
+     [:div.col-sm-4
+      [:a {:href "#about" :on-click #(dispatch! "/about")}
+       [:h2 "about"]]]]]])
 
-(defn simple-component []
-  [:div
-   [:p "I am a component!"]
-   [:p.someclass
-    "I have " [:strong "bold"]
-    [:span {:style {:color "red"}} " and red "] "text."]])
+(defn init![]
+  (secretary/set-config! :prefix "#")
+  (session/put! :current-page empty-section)
+  (r/render-component
+   [bs-main]
+   (.-body js/document)))
 
-(defn start []
-  (r/render-component [bs-main]
-                            (.-body js/document)))
+(init!)
+
+;; History configuration from Secretary docs
+(let [h (History.)]
+  (goog.events/listen h EventType/NAVIGATE #(secretary/dispatch! (.-token %)))
+  (doto h (.setEnabled true)))

@@ -9,7 +9,8 @@
   :source-paths ["src/clj" "src/cljs"]
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2311"]
-                 [whoops/reagent "0.4.3"]]
+                 [whoops/reagent "0.4.3"]
+                 [secretary "1.2.0"]]
 
   ;; lein-cljsbuild plugin to build a CLJS project
   :plugins [[lein-cljsbuild "1.0.3"]]
