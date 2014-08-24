@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [get])
   (:require [reagent.core :as reagent :refer [atom]]))
 
-(def state (atom {}))
+(def state (atom {:games [] :current-page false}))
 
 (defn get [k & [default]]
   (clojure.core/get @state k default))

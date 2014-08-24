@@ -5,39 +5,50 @@
             [secretary.core :as secretary :refer [dispatch!]]
             [secretary.core :include-macros true :refer-macros [defroute]]
             [goog.events :as events]
-            [goog.history.EventType :as EventType])
+            [goog.history.EventType :as EventType]
+            [ajax.core :refer [ajax-request
+                               json-format]])
   (:import goog.History))
 
 (enable-console-print!)
 
-(defn empty-section []
+(def ctg (-> js/React (aget "addons") (aget "CSSTransitionGroup")))
+
+(defn empty-sec []
   [:div])
 
-(defn games-section []
-  [:div
-   [:i "Some stuff about games"]])
+(defn games-sec []
+  (ajax-request {:uri "/php/getgames.php" :method "POST"
+                 :handler (fn [[ok res]]
+                            (if ok
+                              (session/put! :games res)
+                              (.error js/console (str res))))
+                 :format (json-format {:keywords? true})})
+  (fn []
+    [:ul
+     [ctg {:transitionName "example"}
+      (for [game (session/get :games)]
+        ^{:key game} [:li "Item " (game :title)])]]))
 
-(defn ixd-section []
+(defn ixd-sec []
   [:div
    [:i "Some stuff about IxD"]])
 
-(defn about-section []
+(defn about-sec []
   [:div
    [:i "Some stuff about me!"]])
 
 (defroute "/" []
-  (session/put! :current-page empty-section))
+  (session/put! :current-page empty-sec))
 
 (defroute "/games" []
-  (session/put! :current-page games-section))
+  (session/put! :current-page games-sec))
 
 (defroute "/ixd" []
-  (session/put! :current-page ixd-section))
+  (session/put! :current-page ixd-sec))
 
 (defroute "/about" []
-  (session/put! :current-page about-section))
-
-(def current-page (atom nil))
+  (session/put! :current-page about-sec))
 
 (defn page []
   [(session/get :current-page)])
@@ -48,20 +59,20 @@
     [page]
     [:div.row
      [:div.col-sm-4
-      [:a {:href "#games" :on-click #(dispatch! "/games")}
+      [:a {:href "#games"}
        [:h2 "games"]]]
      [:div.col-sm-4
-      [:a {:href "#ixd" :on-click #(dispatch! "/ixd")}
+      [:a {:href "#ixd"}
        [:h2 "interaction"]]]
      [:div.col-sm-4
-      [:a {:href "#about" :on-click #(dispatch! "/about")}
+      [:a {:href "#about"}
        [:h2 "about"]]]]]])
 
 (defn init![]
   (secretary/set-config! :prefix "#")
-  (session/put! :current-page empty-section)
+  (session/put! :current-page empty-sec)
   (r/render-component
-   [bs-main]
+   (fn [][bs-main])
    (.-body js/document)))
 
 (init!)

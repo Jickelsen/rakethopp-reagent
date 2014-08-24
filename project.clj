@@ -10,7 +10,8 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2311"]
                  [whoops/reagent "0.4.3"]
-                 [secretary "1.2.0"]]
+                 [secretary "1.2.0"]
+                 [cljs-ajax "0.2.6"]]
 
   ;; lein-cljsbuild plugin to build a CLJS project
   :plugins [[lein-cljsbuild "1.0.3"]]
@@ -29,7 +30,7 @@
                            :optimizations :whitespace
 
                            ;; let's not forget to include React
-                           :preamble ["reagent/react.js"]
+;;                            :preamble ["reagent/react.js"]
 
                            ;; generated JS code prettyfication
                            :pretty-print true
