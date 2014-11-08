@@ -1,8 +1,9 @@
 (ns rakethopp-reagent.session
   (:refer-clojure :exclude [get])
-  (:require [reagent.core :as reagent :refer [atom]]))
+  (:require [reagent.core :as reagent :refer [atom]]
+            [ajax.core :refer [POST]]))
 
-(def state (atom {:games [] :current-page false}))
+(def state (atom {}))
 
 (defn get [k & [default]]
   (clojure.core/get @state k default))
@@ -11,6 +12,13 @@
   (swap! state assoc k v))
 
 (defn update-in! [ks f & args]
-  (clojure.core/swap!
+  (swap!
    state
    #(apply (partial update-in % ks f) args)))
+
+(defn ajax-put! [& {:keys [url kw param] :or {url "/php/getgame.php" kw "game-detail" param "jgj"}}]
+  (POST url {:params {:stuff param}
+             :format :raw
+             :response-format :json
+             :handler #(put! (keyword kw) %)
+             :keywords? true}))

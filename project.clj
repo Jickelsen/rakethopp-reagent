@@ -11,10 +11,11 @@
                  [org.clojure/clojurescript "0.0-2311"]
                  [whoops/reagent "0.4.3"]
                  [secretary "1.2.0"]
-                 [cljs-ajax "0.2.6"]]
+                 [cljs-ajax "0.3.3"]]
 
   ;; lein-cljsbuild plugin to build a CLJS project
-  :plugins [[lein-cljsbuild "1.0.3"]]
+  :plugins [[lein-cljsbuild "1.0.3"]
+            ]
 
   ;; cljsbuild options configuration
   :cljsbuild {:builds

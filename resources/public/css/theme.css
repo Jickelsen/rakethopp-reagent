@@ -1,0 +1,61 @@
+ body {
+   margin: 0;
+   font-family: Futura, Futura-Medium, "Futura Medium", 'Open Sans', sans-serif;
+   font-weight: 100;
+   font-size: 19px;
+   color:#000000;
+   background-image: url(../img/bg_tex.jpg);
+   background-repeat:repeat;
+ }
+.jumbotron {
+  margin-top: 100px;
+  opacity: 0.7;
+  background-color: rgba(10, 10, 0, 0.5);
+}
+* {
+  -webkit-border-radius: 0 !important;
+     -moz-border-radius: 0 !important;
+          border-radius: 0 !important;
+}
+h2{
+  background-color:rgba(255, 221, 34, 1);
+  color:#000000;
+/*   margin-top: 50px; */
+}
+a:link, a:visited {
+  color:#FFDD22;
+}
+a:hover {
+  background-color:#000000;
+}
+.thumbnail {
+  opacity: 1.0;
+  background-color:rgba(10, 10, 0, 0.5);
+  border-color:rgba(10, 10, 0, 1);
+}
+h6 {
+  color:rgba(255, 221, 34, 1);
+}
+ q:before,
+ select,
+ textarea {
+  font-family: Futura, Futura-Medium, "Futura Medium", 'Open Sans', sans-serif;
+ }
+ label {
+  margin-bottom: 0;
+  padding: 4px 14px;
+  font-family: Futura, Futura-Medium, "Futura Medium", 'Open Sans', sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+ }
+ h1 {
+  font-size: 57px;
+  font-family: Futura, Futura-Medium, "Futura Medium", 'Open Sans', sans-serif;
+  line-height: 81px;
+  letter-spacing: 1px;
+  top: 18px;
+  color: #aaaaaa;
+  font-family: Futura, Futura-Medium, "Futura Medium", 'Open Sans', sans-serif;
+/*   margin-bottom: 50px; */
+  margin-top: 0px;
+ }
