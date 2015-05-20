@@ -1,5 +1,6 @@
-(ns rakethopp-reagent.rakethopp
-  (:require [rakethopp-reagent.session :as session]
+(ns rake	pp-reagent.rakethopp
+  (
+  :require [rakethopp-reagent.session :as session]
             [clojure.string :as string]
             [reagent.core :as r :refer [atom]]
             [secretary.core :as secretary :refer [dispatch!]]

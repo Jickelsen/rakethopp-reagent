@@ -23,17 +23,34 @@ h2{
 /*   margin-top: 50px; */
 }
 a:link, a:visited {
-  color:#FFDD22;
+  color:rgba(255, 221, 34, 1);
+}
+a:link, a:visited {
+  color:rgba(255, 221, 34, 1);
 }
 a:hover {
   background-color:#000000;
 }
 .thumbnail {
   opacity: 1.0;
-  background-color:rgba(10, 10, 0, 0.5);
-  border-color:rgba(10, 10, 0, 1);
+  background-color:rgba(255, 221, 34, 1);
+/*   background-color:rgba(10, 10, 0, 0.5); */
+  border-color:rgba(255, 221, 34, 1);
+}
+.thumbnail:hover {
+  opacity: 1.0;
+  border-color:rgba(255, 221, 34, 1);
 }
 h6 {
+  font-size: 14px;
+  color:#000000;
+/*   margin-top: 30px; */
+/*   margin-bottom: 0px; */
+/*   padding: 20% 0; */
+  vertical-align: true;
+  height: 40px;
+}
+h6:hover {
   color:rgba(255, 221, 34, 1);
 }
  q:before,
@@ -54,7 +71,6 @@ h6 {
   line-height: 81px;
   letter-spacing: 1px;
   top: 18px;
-  color: #aaaaaa;
   font-family: Futura, Futura-Medium, "Futura Medium", 'Open Sans', sans-serif;
 /*   margin-bottom: 50px; */
   margin-top: 0px;

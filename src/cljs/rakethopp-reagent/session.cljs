@@ -16,9 +16,9 @@
    state
    #(apply (partial update-in % ks f) args)))
 
-(defn ajax-put! [& {:keys [url kw param] :or {url "/php/getgame.php" kw "game-detail" param "jgj"}}]
-  (POST url {:params {:stuff param}
+(defn ajax-put! [& {:keys [url work-type] :or {url "/php/getworks.php" work-type "game-detail"}}]
+  (POST url {:params {:workType work-type}
              :format :raw
              :response-format :json
-             :handler #(put! (keyword kw) %)
+             :handler #(put! :works %)
              :keywords? true}))

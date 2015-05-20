@@ -8,8 +8,8 @@
 }
 
 .example-leave {
-    opacity: 1.0;
-    transition: opacity .5s ease-in;
+    opacity: 0.5;
+    transition: opacity .001s ease-in;
 }
 
 .example-leave.example-leave-active {
