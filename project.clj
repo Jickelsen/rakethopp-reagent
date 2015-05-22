@@ -7,15 +7,15 @@
 
   ;; CLJ AND CLJS source code path
   :source-paths ["src/clj" "src/cljs"]
-  :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-2311"]
+  :dependencies [[org.clojure/clojure "1.7.0-beta3"]
+                 [org.clojure/clojurescript "0.0-3211"]
                  [whoops/reagent "0.4.3"]
                  [secretary "1.2.0"]
                  [cljs-ajax "0.3.3"]]
 
   ;; lein-cljsbuild plugin to build a CLJS project
-  :plugins [[lein-cljsbuild "1.0.3"]
-            ]
+  :plugins [[lein-cljsbuild "1.0.5"]
+            [lein-figwheel "0.3.3"]]
 
   ;; cljsbuild options configuration
   :cljsbuild {:builds
@@ -23,12 +23,15 @@
                 :source-paths ["src/cljs"]
 
                 ;; Google Closure (CLS) options configuration
-                :compiler {;; CLS generated JS script filename
+                :compiler {:main rakethopp-reagent.rakethopp
+                           ;; CLS generated JS script filename
                            :output-to "resources/public/js/rakethopp.js"
                            :output-dir "resources/public/js/out"
-
+                           :asset-path "js/out"
                            ;; minimal JS optimization directive
-                           :optimizations :whitespace
+                           :optimizations :none
+                           
+                           :figwheel {}
 
                            ;; let's not forget to include React
 ;;                            :preamble ["reagent/react.js"]
@@ -37,4 +40,33 @@
                            :pretty-print true
 
                            ;; source maps are cool
-                           :source-map "resources/public/js/rakethopp.js.map"}}]})
+                           :source-map "resources/public/js/rakethopp.js.map"}}]}
+  :figwheel {
+             :http-server-root "public" ;; default and assumes "resources" 
+             :server-port 3500 ;; default
+             :css-dirs ["resources/public/css"] ;; watch and update CSS
+
+             ;; Start an nREPL server into the running figwheel process
+             :nrepl-port 7900
+
+             ;; Server Ring Handler (optional)
+             ;; if you want to embed a ring handler into the figwheel http-kit
+             ;; server, this is simple ring servers, if this
+             ;; doesn't work for you just run your own server :)
+             ;; :ring-handler hello_world.server/handler
+
+             ;; To be able to open files in your editor from the heads up display
+             ;; you will need to put a script on your path.
+             ;; that script will have to take a file path and a line number
+             ;; ie. in  ~/bin/myfile-opener
+             ;; #! /bin/sh
+             ;; emacsclient -n +$2 $1
+             ;;
+             ;; :open-file-command "myfile-opener"
+
+             ;; if you want to disable the REPL
+             ;; :repl false
+
+             ;; to configure a different figwheel logfile path
+             ;; :server-logfile "tmp/logs/figwheel-logfile.log" 
+             })

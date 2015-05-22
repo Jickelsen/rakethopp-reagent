@@ -1,11 +1,11 @@
-(ns rake	pp-reagent.rakethopp
-  (
-  :require [rakethopp-reagent.session :as session]
+(ns rakethopp-reagent.rakethopp
+  (:require [rakethopp-reagent.session :as session]
             [clojure.string :as string]
             [reagent.core :as r :refer [atom]]
             [secretary.core :as secretary :refer [dispatch!]]
             [secretary.core :include-macros true :refer-macros [defroute]]
             [goog.events :as events]
+            [figwheel.client :as fw]
             [goog.history.EventType :as EventType])
 
   (:import goog.History))
@@ -21,7 +21,7 @@
   [:div.row
    [:h2 ((first work) :title)]
    [:p ((first work) :description) ]
-   (if-not (empty? (first work) :url)
+   (if-not (empty? (:url (first work)))
      [:a {:href ((first work) :url)} [:p ((first work) :url_text)]]
      [:div])
    (for [x (vec (range ((first work) :num_img)))]
@@ -121,3 +121,27 @@
 (let [h (History.)]
   (goog.events/listen h EventType/NAVIGATE #(secretary/dispatch! (.-token %)))
   (doto h (.setEnabled true)))
+
+(fw/start
+ {
+  
+  ;; configure a websocket url if you are using your own server
+  :websocket-url "ws://localhost:3500/figwheel-ws"
+
+  ;; optional callback
+  :on-jsload (fn [] (print "reloaded"))
+
+  ;; The heads up display is enabled by default
+  ;; to disable it: 
+  ;; :heads-up-display false
+
+  ;; when the compiler emits warnings figwheel
+  ;; blocks the loading of files.
+  ;; To disable this behavior:
+  ;; :load-warninged-code true
+
+  ;; if figwheel is watching more than one build
+  ;; it can be helpful to specify a build id for
+  ;; the client to focus on
+  ;; :build-id "example"
+})
