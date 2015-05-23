@@ -9,9 +9,10 @@
   :source-paths ["src/clj" "src/cljs"]
   :dependencies [[org.clojure/clojure "1.7.0-beta3"]
                  [org.clojure/clojurescript "0.0-3211"]
-                 [whoops/reagent "0.4.3"]
-                 [secretary "1.2.0"]
-                 [cljs-ajax "0.3.3"]]
+                 [reagent "0.5.0-alpha3"]
+                 [re-frame "0.2.0"]
+                 [secretary "1.2.1"]
+                 [cljs-ajax "0.3.10"]]
 
   ;; lein-cljsbuild plugin to build a CLJS project
   :plugins [[lein-cljsbuild "1.0.5"]
@@ -23,7 +24,7 @@
                 :source-paths ["src/cljs"]
 
                 ;; Google Closure (CLS) options configuration
-                :compiler {:main rakethopp-reagent.rakethopp
+                :compiler {:main rakethopp-reagent.core
                            ;; CLS generated JS script filename
                            :output-to "resources/public/js/rakethopp.js"
                            :output-dir "resources/public/js/out"

@@ -1,4 +1,4 @@
-(ns rakethopp-reagent.rakethopp
+(ns rakethopp-reagent.core
   (:require [rakethopp-reagent.session :as session]
             [clojure.string :as string]
             [reagent.core :as r :refer [atom]]
