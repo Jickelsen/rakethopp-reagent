@@ -1,4 +1,4 @@
-(defproject rakethopp-reagent "0.1.0-SNAPSHOT"
+(defproject rakethopp-reagent "0.2.0-SNAPSHOT"
   :description "My personal portfolio page made with ClojureScript and Dan Holmsand's Reagent. Email jickelsen@rakethopp.se/jacobmi@tii.se or send a tweet to @jickelsen."
   :url "http://rakethopp.se"
   :license {:name "Eclipse Public License"
@@ -7,15 +7,16 @@
 
   ;; CLJ AND CLJS source code path
   :source-paths ["src/clj" "src/cljs"]
-  :dependencies [[org.clojure/clojure "1.7.0-beta3"]
+  :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-3211"]
-                 [reagent "0.5.0-alpha3"]
+                 [reagent "0.5.0"]
                  [re-frame "0.2.0"]
                  [secretary "1.2.1"]
                  [cljs-ajax "0.3.10"]]
 
   ;; lein-cljsbuild plugin to build a CLJS project
   :plugins [[lein-cljsbuild "1.0.5"]
+            [cider/cider-nrepl "0.9.0-SNAPSHOT"]
             [lein-figwheel "0.3.3"]]
 
   ;; cljsbuild options configuration
