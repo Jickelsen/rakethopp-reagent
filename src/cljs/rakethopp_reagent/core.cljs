@@ -1,6 +1,5 @@
 (ns rakethopp-reagent.core
-  (:require [rakethopp-reagent.session :as session]
-            [clojure.string :as string]
+  (:require [clojure.string :as string]
             [reagent.core :as reagent :refer [atom]]
             [re-frame.core :as re-frame]
             [ajax.core :as ajax]
@@ -28,15 +27,35 @@
  (fn
    [db v]
    {:games []
-    :game-details {}
     :projects []
-    :project-details {}
-    :current-work-type ""}))
+
+    ;; Sessions here instead of in reagent/session
+    :current-page nil
+    :params {}
+    }))
 
 (re-frame/register-sub
- :current-work-type
+ :current-page
  (fn [db]
-   (reaction (:current-work-type @db))))
+   (reaction (:current-page @db))))
+
+(re-frame/register-handler
+  :current-page-update
+  (fn
+    [app-state [_ current-page]]
+    (assoc app-state :current-page current-page)))
+
+(re-frame/register-sub
+ :params
+ (fn [db]
+   (reaction (:params @db))))
+
+(re-frame/register-handler
+  :params-update
+  (fn
+    [app-state [_ params]]
+    (println params)
+    (assoc app-state :params params)))
 
 (re-frame/register-handler
  :load-works
@@ -70,14 +89,15 @@
    app-state))
 
 (re-frame/register-sub
- :works
+ :games
  (fn [db]
-   (reaction (:works @db))))
+   (reaction (:games @db))))
 
 (re-frame/register-sub
- :current-detail
+ :projects
  (fn [db]
-   (reaction (:works @db))))
+   (reaction (:projects @db))))
+
 ;; -------------------------
 ;; Views
 
@@ -93,31 +113,36 @@
      [:a {:href ((first work) :url)} [:p ((first work) :url_text)]]
      [:div])
    (for [x (vec (range ((first work) :num_img)))]
-     [:div.col-sm-3.col-xs-6
+     ^{:key x} [:div.col-sm-3.col-xs-6
       [:a.thumbnail {:data-lightbox ((first work) :title_short) :href (str "/img/" ((first work) :title_short) "_" x ".jpg")}
        ;;         (.error js/console (str "hello" x))
        [:img {:src (str "/img/" ((first work) :title_short) "_" x ".jpg")}]]])])
 
-(defn work-splash [work]
+(defn work-splash [work work-type]
   [:div.col-sm-3.col-xs-6
-   [:a.thumbnail {:href (str "#" (session/get :current-type) "/" (work :title_short))}
+   [:a.thumbnail {:href (str "#" work-type "/" (work :title_short))}
     [:img {:src (str "/img/" (work :title_short) "_th.jpg")}]
     [:div.caption
      [:h6 (work :title)]]]])
 
-(defn works-sec []
-(let [works (re-frame/subscribe [:works])
-        current-detail (re-frame/subscribe [:current-detail])])
-  [:div.col-sm-12
-   ;; [ctg {:transitionName "example" :transitionLeave false}]
-   (if-not (or (empty? (session/get :works)) (empty? (session/get :current-detail)))
-     ;;      (.error js/console [work-detail (filter (= (get (session/get :current-detail)(session/get :works))))])
-     ^{:key (session/get :current-detail)}[work-detail (filterv #(= (:title_short %) (session/get :current-detail)) (session/get :works) )]
-     [:div])
-   [:div.row
-    ;; [ctg {:transitionName "example"}]
-    (for [work (session/get :works)]
-      ^{:key work} [work-splash work])]])
+(defn works-sec [{work-id :work-id work-type :work-type}]
+  (let [works (cond
+                (=  work-type "games")
+                (re-frame/subscribe [:games])
+                (= work-type "projects")
+                (re-frame/subscribe [:projects]))
+        ]
+    [:div.col-sm-12
+    (println work-id)
+     ;; [ctg {:transitionName "example" :transitionLeave false}]
+     (if-not (empty? work-id)
+       [work-detail (filterv #(= (:title_short %) work-id) @works)]
+       [:div])
+     ;; (if-not (empty? @works))
+     [:div.row
+      ;; [ctg {:transitionName "example"}]
+      (for [work @works]
+        ^{:key work} [work-splash work work-type])]]))
 
 (defn about-sec []
   [:div
@@ -126,38 +151,30 @@
 ;; -------------------------
 ;; Routes
 (defroute "/" []
-  (session/put! :current-page empty-sec))
+  (println "Dispatching on /")
+  (re-frame/dispatch [:current-page-update empty-sec]))
 
-(defroute "/games" []
-  (session/ajax-put! :url "/php/getworks.php" :work-type "games" )
-  (session/put! :current-page works-sec)
-  (session/put! :current-type "games")
-  (session/put! :current-detail []))
+(defroute "/:work-type" {:as params} 
+  (println "Dispatching on  work-type " params)
+  (re-frame/dispatch [:params-update params])
+  (if (= (:work-type params) "about")
+    (re-frame/dispatch [:current-page-update about-sec])
+    (re-frame/dispatch [:current-page-update works-sec])
+    )
+  )
 
-(defroute "/games/:game" {:as params}
-  (session/ajax-put! :url "/php/getworks.php" :work-type "games")
-  (session/put! :current-page works-sec)
-  (session/put! :params params)
-  (session/put! :current-type "games")
-  (session/put! :current-detail (:game params)))
-
-(defroute "/projects" []
-  (session/ajax-put! :url "/php/getworks.php" :work-type "projects")
-  (session/put! :current-page works-sec)
-  (session/put! :current-type "projects")
-  (session/put! :current-detail []))
-
-(defroute "/projects/:project" {:as params}
-  (session/ajax-put! :url "/php/getworks.php" :work-type "projects")
-  (session/put! :current-page works-sec)
-  (session/put! :current-type "projects")
-  (session/put! :current-detail (:project params)))
-
-(defroute "/about" []
-  (session/put! :current-page about-sec))
+(defroute "/:work-type/:work-id" {:as params}
+  (println "Dispatching on " (:work-type params) " with " (:work-id params))
+  (re-frame/dispatch [:params-update params])
+  (re-frame/dispatch [:current-page-update works-sec])
+  )
 
 (defn current-page []
-  [(session/get :current-page) (session/get :params)])
+  (let [current-page (re-frame/subscribe [:current-page])
+        params (re-frame/subscribe [:params])]
+    (if (= @current-page nil)
+      [empty-sec]
+      [@current-page @params])))
 
 (defn bs-main []
   [:div.container
@@ -182,9 +199,10 @@
 
 (defn init![]
   (secretary/set-config! :prefix "#")
-  (session/put! :current-page empty-sec)
+  ;; (re-frame/dispatch [:current-page-update] empty-sec)
   (re-frame/dispatch [:initialise-db])
   (re-frame/dispatch [:load-works])
+  (re-frame/dispatch [:current-page-update empty-sec])
   (reagent/render-component
    (fn [][bs-main])
    (.-body js/document)))
