@@ -19,7 +19,7 @@
                  [re-frame "0.2.0"]
                  [secretary "1.2.1"]
                  [cljs-ajax "0.3.10"]]
-
+  :min-lein-version "2.0.0"
   ;; lein-cljsbuild plugin to build a CLJS project
   :plugins [[lein-cljsbuild "1.0.5"]
             [environ/environ.lein "0.2.1"]
