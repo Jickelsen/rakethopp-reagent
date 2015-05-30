@@ -23,15 +23,15 @@
 (defroutes app
   (ANY "/repl" {:as req}
        (drawbridge req))
-  (GET "/" []
-       {:status 200
-        :headers {"Content-Type" "text/plain"}
-        :body (pr-str ["Hello" :from 'Heroku])})
   ;; (GET "/" []
   ;;      {:status 200
   ;;       :headers {"Content-Type" "text/plain"}
-  ;;       :body (io/file "public/index.html")
-  ;;       })
+  ;;       :body (pr-str ["Hello" :from 'Heroku])})
+  (GET "/" []
+       {:status 200
+        :headers {"Content-Type" "text/plain"}
+        :body (io/file "public/index.html")
+        })
   ;; (ANY "*" []
   ;;      (route/not-found (slurp (io/resource "404.html"))))
   )
@@ -52,6 +52,8 @@
            wrap-error-page
            trace/wrap-stacktrace))
         (site {:session {:store store}}))))
+
+(defn run-local [& [port]] (site #'app))
 
 (defn -main [& [port]]
   (let [port (Integer. (or port (env :port) 5000))]

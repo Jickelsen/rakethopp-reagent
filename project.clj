@@ -25,9 +25,9 @@
             [environ/environ.lein "0.2.1"]
             [cider/cider-nrepl "0.9.0-SNAPSHOT"]
             [lein-figwheel "0.3.3"]
-            ;; [lein-ring "0.9.4"]
+            [lein-ring "0.9.4"]
             ]
-  ;; :ring {:handler rakethopp-reagent.server/-main}
+  :ring {:handler rakethopp-reagent.server/run-local}
   :hooks [environ.leiningen.hooks]
 
   :uberjar-name "rakethopp-standalone.jar"
