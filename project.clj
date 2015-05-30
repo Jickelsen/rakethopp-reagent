@@ -9,6 +9,12 @@
   :source-paths ["src/clj" "src/cljs"]
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-3211"]
+                 [compojure "1.1.8"]
+                 [ring/ring-jetty-adapter "1.2.2"]
+                 [ring/ring-devel "1.2.2"]
+                 [ring-basic-authentication "1.0.5"]
+                 [environ "0.5.0"]
+                 [com.cemerick/drawbridge "0.0.6"]
                  [reagent "0.5.0"]
                  [re-frame "0.2.0"]
                  [secretary "1.2.1"]
@@ -16,9 +22,17 @@
 
   ;; lein-cljsbuild plugin to build a CLJS project
   :plugins [[lein-cljsbuild "1.0.5"]
+            [environ/environ.lein "0.2.1"]
             [cider/cider-nrepl "0.9.0-SNAPSHOT"]
-            [lein-figwheel "0.3.3"]]
+            [lein-figwheel "0.3.3"]
+            ;; [lein-ring "0.9.4"]
+            ]
+  ;; :ring {:handler rakethopp-reagent.server/-main}
+  :hooks [environ.leiningen.hooks]
 
+  :uberjar-name "rakethopp-standalone.jar"
+  :profiles {:production {:env {:production true}}
+             :uberjar {:aot :all}}
   ;; cljsbuild options configuration
   :cljsbuild {:builds
               [{;; CLJS source code path

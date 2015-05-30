@@ -1,0 +1,1 @@
+web: java $JVM_OPTS -cp target/rakethopp-standalone.jar clojure.main -m rakethopp-reagent.server

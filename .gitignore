@@ -1,5 +1,6 @@
 /resources/public/js/compiled/**
 figwheel_server.log
+/pom.xml
 pom.xml
 pom.xml.asc
 *jar
@@ -8,13 +9,10 @@ pom.xml.asc
 out/
 /target/
 /checkouts/
-.lein-deps-sum
-.lein-repl-history
-.lein-plugins/
+/.lein-*
 .repl
-.nrepl-port
-.lein-failures
 .idea/
 *.iml
 .log
 *.org
+/.env
