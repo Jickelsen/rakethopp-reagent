@@ -14,6 +14,7 @@
                  [ring/ring-devel "1.2.2"]
                  [ring-basic-authentication "1.0.5"]
                  [environ "0.5.0"]
+                 [lein-figwheel "0.3.3"]
                  [com.cemerick/drawbridge "0.0.6"]
                  [reagent "0.5.0"]
                  [re-frame "0.2.0"]
@@ -56,7 +57,24 @@
                            :pretty-print true
 
                            ;; source maps are cool
-                           :source-map "resources/public/js/rakethopp.js.map"}}]}
+                           :source-map "resources/public/js/rakethopp.js.map"}}
+               {:id "production"
+                ;; CLJS source code path
+                :source-paths ["src/cljs"]
+
+
+                ;; Google Closure (CLS) options configuration
+                :compiler {:main rakethopp-reagent.core
+                           ;; CLS generated JS script filename
+                           :output-to "resources/public/js/rakethopp.js"
+                           :output-dir "resources/public/js/out-prod"
+                           :asset-path "js/out-prod"
+                           ;; minimal JS optimization directive
+                           :optimizations :simple
+                           :figwheel {}
+                           ;; generated JS code prettyfication
+                           :pretty-print true
+                           }}]}
   :figwheel {
              :http-server-root "public" ;; default and assumes "resources" 
              :server-port 3500 ;; default
