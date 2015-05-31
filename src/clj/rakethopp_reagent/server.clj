@@ -21,6 +21,7 @@
       (basic/wrap-basic-authentication authenticated?)))
 
 (defroutes app
+  (route/resources "/")
   (ANY "/repl" {:as req}
        (drawbridge req))
   ;; (GET "/" []
