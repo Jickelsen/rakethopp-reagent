@@ -16,3 +16,4 @@ out*/
 .log
 *.org
 /.env
+*.swp
