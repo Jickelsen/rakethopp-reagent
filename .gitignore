@@ -17,3 +17,5 @@ out*/
 *.org
 /.env
 *.swp
+/pg/
+*.js.map

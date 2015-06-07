@@ -1,14 +1,17 @@
 (ns rakethopp-reagent.core
   (:require [clojure.string :as string]
+            [cljs.core.async :refer [put! <! >! chan timeout]]
             [reagent.core :as reagent :refer [atom]]
             [re-frame.core :as re-frame]
-            [ajax.core :as ajax]
+            [cljs-http.client :as http]
+            ;; [ajax.core :as ajax]
             [secretary.core :as secretary :refer [dispatch!]]
             [secretary.core :include-macros true :refer-macros [defroute]]
             [goog.events :as events]
             [goog.history.EventType :as EventType])
 
-  (:require-macros [reagent.ratom  :refer [reaction]])
+  (:require-macros [reagent.ratom  :refer [reaction]]
+                   [cljs.core.async.macros :refer [go alt!]])
   (:import goog.History))
 
 (enable-console-print!)
@@ -56,28 +59,37 @@
     (println params)
     (assoc app-state :params params)))
 
+(defn request-json
+  [url k]
+  (let [c (chan)]
+    (go (let [response (<! (http/post url {:json-params {:work-type k}}))]
+          ;;   (go (let [response (<! (ajax/POST url {:params {:workType k}
+          ;;                     :format :raw
+          ;;                     :response-format :json
+          ;;                     :handler #(re-frame/dispatch [:process-works-response %1 k])
+          ;;                     :error-handler #(re-frame/dispatch [:process-works-bad-response %1 k])
+          ;;                     :keywords? true}))]
+          (>! c response))
+        )c))
+
 (re-frame/register-handler
  :load-works
  (fn
    [app-state _]
-   (ajax/POST "/php/getworks.php" {:params {:workType "games"}
-                      :format :raw
-                      :response-format :json
-                      :handler #(re-frame/dispatch [:process-works-response %1 :games])
-                      :error-handler #(re-frame/dispatch [:process-works-bad-response %1 :games])
-                      :keywords? true})
-   (ajax/POST "/php/getworks.php" {:params {:workType "projects"}
-                         :format :raw
-                         :response-format :json
-                         :handler #(re-frame/dispatch [:process-works-response %1 :projects])
-                         :keywords? true})
+   (go (while true
+         (let [games-data (:body (<! (request-json "/api" :games)))
+               projects-data (:body (<! (request-json "/api" :projects)))
+               ]
+           (re-frame/dispatch [:process-works-response games-data :games])
+           (re-frame/dispatch [:process-works-response projects-data :projects])
+           )
+         (<! (timeout 30000))))
    app-state))
 
 (re-frame/register-handler
   :process-works-response
   (fn
     [app-state [_ response k]]
-    ;; (println "hey" response)
     (assoc-in app-state [k] response)))
 
 (re-frame/register-handler
@@ -125,23 +137,26 @@
      [:h6 (work :title)]]]])
 
 (defn works-sec [{work-id :work-id work-type :work-type}]
-  (let [works (cond
-                (=  work-type "games")
-                (re-frame/subscribe [:games])
-                (= work-type "projects")
-                (re-frame/subscribe [:projects]))
-        ]
-    [:div.col-sm-12
-    (println work-id)
-     ;; [ctg {:transitionName "example" :transitionLeave false}]
-     (if-not (empty? work-id)
-       [work-detail (filterv #(= (:title_short %) work-id) @works)]
-       [:div])
-     ;; (if-not (empty? @works))
-     [:div.row
-      ;; [ctg {:transitionName "example"}]
-      (for [work @works]
-        ^{:key work} [work-splash work work-type])]]))
+  ;; (println "work type is " work-type)
+  (if-not (= "about" work-type)
+    (let [works (cond
+                  (=  work-type "games")
+                  (re-frame/subscribe [:games])
+                  (= work-type "projects")
+                  (re-frame/subscribe [:projects]))
+          ]
+      [:div.col-sm-12
+       ;; (println "work id is " work-id)
+       ;; [ctg {:transitionName "example" :transitionLeave false}]
+       (if-not (empty? work-id) 
+         (let [selected-work (filterv #(= (:title_short %) work-id) @works)]
+           (if-not (empty? selected-work)
+             [work-detail selected-work])))
+       [:div]
+       [:div.row
+        ;; [ctg {:transitionName "example"}]
+        (for [work @works]
+          ^{:key work} [work-splash work work-type])]])))
 
 (defn about-sec []
   [:div
@@ -150,11 +165,9 @@
 ;; -------------------------
 ;; Routes
 (defroute "/" []
-  (println "Dispatching on /")
   (re-frame/dispatch [:current-page-update empty-sec]))
 
 (defroute "/:work-type" {:as params} 
-  (println "Dispatching on  work-type " params)
   (re-frame/dispatch [:params-update params])
   (if (= (:work-type params) "about")
     (re-frame/dispatch [:current-page-update about-sec])
@@ -163,7 +176,6 @@
   )
 
 (defroute "/:work-type/:work-id" {:as params}
-  (println "Dispatching on " (:work-type params) " with " (:work-id params))
   (re-frame/dispatch [:params-update params])
   (re-frame/dispatch [:current-page-update works-sec])
   )

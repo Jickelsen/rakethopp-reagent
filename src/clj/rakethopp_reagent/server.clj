@@ -3,11 +3,15 @@
             [compojure.handler :refer [site]]
             [compojure.route :as route]
             [clojure.java.io :as io]
+            [clojure.java.jdbc :as sql]
             [ring.middleware.stacktrace :as trace]
             [ring.middleware.session :as session]
             [ring.middleware.session.cookie :as cookie]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.basic-authentication :as basic]
+            [ring.middleware.json :as middleware]
+            [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
+            [ring.util.response :refer [response resource-response content-type]]
             [cemerick.drawbridge :as drawbridge]
             [environ.core :refer [env]]))
 
@@ -20,16 +24,33 @@
       (session/wrap-session)
       (basic/wrap-basic-authentication authenticated?)))
 
+(def spec (or (System/getenv "DATABASE_URL")
+              "postgresql://localhost:5432/rakethopp"))
+
+(defn json-request [& [request]]
+  (let [query (:work-type request)]
+    (println request)
+    (cond
+      (= query "games")
+      (response (sql/query spec ["select * from games order by num desc"]) )
+      (= query "projects")
+      (response (sql/query spec ["select * from projects order by num desc"]) )
+      :else
+      (response (sql/query spec ["select * from projects order by num desc"]) )
+      )))
+
+(defn fix-map [a-map] (into {}
+                    (for [[k v] a-map]
+                      [(keyword k) v])))
+
 (defroutes app
   (route/resources "/")
   (ANY "/repl" {:as req}
        (drawbridge req))
-  ;; (GET "/" []
-  ;;      {:status 200
-  ;;       :headers {"Content-Type" "text/plain"}
-  ;;       :body (pr-str ["Hello" :from 'Heroku])})
-  (GET "/" []
-       (io/resource "public/index.html")
+  (GET "/" [] (-> (resource-response "index.html" {:root "public"}) (content-type "text/html")))
+  (POST "/api" req
+       ;; (response {:foo "bar"})
+        (json-request (fix-map(:body req)))
        )
   ;; (ANY "*" []
   ;;      (route/not-found (slurp (io/resource "404.html"))))
@@ -50,9 +71,15 @@
         ((if (env :production)
            wrap-error-page
            trace/wrap-stacktrace))
+        (middleware/wrap-json-body {:keywords? true :bigdecimals? true})
+        (middleware/wrap-json-response)
+        ;; (wrap-defaults (assoc-in site-defaults [:security :anti-forgery] false))
         (site {:session {:store store}}))))
 
-(defn run-local [& [port]] (site #'app))
+(defn run-local [& [port]] ((-> #'app
+        ;; (middleware/wrap-json-body)
+        ;; (middleware/wrap-json-response)
+        )))
 
 (defn -main [& [port]]
   (let [port (Integer. (or port (env :port) 5000))]
