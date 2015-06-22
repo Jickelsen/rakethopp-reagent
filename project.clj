@@ -19,11 +19,11 @@
                  [ring-basic-authentication "1.0.5"]
                  [environ "0.5.0"]
                  [com.cemerick/drawbridge "0.0.6"]
-                 [reagent "0.5.0"]
+                 [reagent "0.5.0" :exclusions [cljsjs/react]]
+                 [cljsjs/react-with-addons "0.12.2-4"]
                  [re-frame "0.2.0"]
                  [secretary "1.2.1"]
                  [cljs-http "0.1.34"]
-                 ;; [cljs-ajax "0.3.10"]
                  [org.clojure/java.jdbc "0.3.2"]
                  [postgresql "9.1-901.jdbc4"]]
 

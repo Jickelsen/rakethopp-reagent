@@ -29,7 +29,6 @@
 
 (defn json-request [& [request]]
   (let [query (:work-type request)]
-    (println request)
     (cond
       (= query "games")
       (response (sql/query spec ["select * from games order by num desc"]) )
@@ -49,7 +48,6 @@
        (drawbridge req))
   (GET "/" [] (-> (resource-response "index.html" {:root "public"}) (content-type "text/html")))
   (POST "/api" req
-       ;; (response {:foo "bar"})
         (json-request (fix-map(:body req)))
        )
   ;; (ANY "*" []
