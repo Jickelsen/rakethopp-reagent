@@ -1,6 +1,7 @@
 @font-face {
     font-family: nomovement;
-    src: url(nomove.ttf); /* TTF file for CSS3 browsers */
+    src: url('no-move.woff');
+    /* src: url('no-move.ttf') format('truetype'); /\* TTF file for CSS3 browsers *\/ */
 }
  body {
    margin: 0;
