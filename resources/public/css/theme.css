@@ -1,6 +1,10 @@
+@font-face {
+    font-family: nomovement;
+    src: url(nomove.ttf); /* TTF file for CSS3 browsers */
+}
  body {
    margin: 0;
-   font-family: Futura, Futura-Medium, "Futura Medium", 'Open Sans', sans-serif;
+   font-family: nomovement;
    font-weight: 100;
    font-size: 19px;
    color:#000000;
@@ -11,6 +15,7 @@
   margin-top: 100px;
   opacity: 0.7;
   background-color: rgba(10, 10, 0, 0.5);
+  width: 840px !important;
 }
 * {
   -webkit-border-radius: 0 !important;
@@ -19,8 +24,14 @@
 }
 h2{
   background-color:rgba(255, 221, 34, 1);
+  margin-top: 20px;
   color:#000000;
 /*   margin-top: 50px; */
+}
+p{
+    margin-top: 25px;
+    margin-bottom: 25px !important;
+    text-align: left;
 }
 a:link, a:visited {
   color:rgba(255, 221, 34, 1);
@@ -33,12 +44,15 @@ a:hover {
 }
 hr {
     display: block; height: 1px;
-    border: 0; border-top: 5px solid rgba(255, 221, 34, 1);
-    margin-top: 0;
+    border: 0; border-top: 6px solid rgba(255, 221, 34, 1);
+    margin-top: 2px;
+    margin-bottom: 40px !important;
     padding: 0; 
 }
 .thumbnail {
   opacity: 1.0;
+  border: 0px;
+  padding: 6px;
   background-color:rgba(255, 221, 34, 1);
 /*   background-color:rgba(10, 10, 0, 0.5); */
   border-color:rgba(255, 221, 34, 1);
@@ -48,13 +62,13 @@ hr {
   border-color:rgba(255, 221, 34, 1);
 }
 h6 {
-  font-size: 14px;
+  font-size: 16px;
   color:#000000;
 /*   margin-top: 30px; */
-/*   margin-bottom: 0px; */
+  /* margin-bottom: -15px; */
 /*   padding: 20% 0; */
   vertical-align: true;
-  height: 40px;
+  /* height: 40px; */
 }
 h6:hover {
   color:rgba(255, 221, 34, 1);
@@ -62,22 +76,21 @@ h6:hover {
  q:before,
  select,
  textarea {
-  font-family: Futura, Futura-Medium, "Futura Medium", 'Open Sans', sans-serif;
+   font-family: nomovement;
  }
  label {
   margin-bottom: 0;
   padding: 4px 14px;
-  font-family: Futura, Futura-Medium, "Futura Medium", 'Open Sans', sans-serif;
+   font-family: nomovement;
   font-size: 13px;
   font-weight: normal;
  }
  h1 {
   font-size: 57px;
-  font-family: Futura, Futura-Medium, "Futura Medium", 'Open Sans', sans-serif;
+   font-family: nomovement;
   line-height: 81px;
   letter-spacing: 1px;
   top: 18px;
-  font-family: Futura, Futura-Medium, "Futura Medium", 'Open Sans', sans-serif;
 /*   margin-bottom: 50px; */
   margin-top: 0px;
  }
@@ -90,4 +103,11 @@ h6:hover {
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;  
+}
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+.centeredtext {
+    text-align: center;
 }

@@ -114,18 +114,18 @@
    [:div.col-sm-12
     ;; (println (re-frame/subscribe [:whole-db]))
     [:h2 ((first work) :title)]
-    [:p ((first work) :description) ]]
-   (if-not (empty? (:url (first work)))
-     [:a {:href ((first work) :url)} [:p ((first work) :url_text)]]
-     [:div])
+    [:p ((first work) :description) ]
+    (if-not (empty? (:url (first work)))
+      [:a {:href ((first work) :url)} [:p.centeredtext ((first work) :url_text)]]
+      [:div])]
    (for [x (vec (range ((first work) :num_img)))]
-     ^{:key x} [:div.col-sm-3.col-xs-6
+     ^{:key x} [:div.col-sm-4.col-xs-6
       [:a.thumbnail {:data-lightbox ((first work) :title_short) :rel "lightbox" :href (str "/img/" ((first work) :title_short) "_" x ".jpg")}
        ;;         (.error js/console (str "hello" x))
        [:div.ratio {:style {:background-image (str "url('/img/" ((first work) :title_short) "_" x ".jpg')")}}]]])])
 
 (defn work-splash [work work-type]
-  [:div.col-sm-3.col-xs-6
+  [:div.col-sm-4.col-xs-6
    [:a.thumbnail {:href (str "#" work-type "/" (work :title_short))}
     [:img {:src (str "/img/" (work :title_short) "_th.jpg")}]
     [:div.caption
