@@ -33,14 +33,17 @@
     :projects []
 
     ;; Sessions here instead of in reagent/session
-    :current-page nil
+    :current-page empty-sec
     :params {}
     }))
 
 (re-frame/register-sub
  :current-page
  (fn [db]
-   (reaction (:current-page @db))))
+   (reaction (let [c-page (:current-page @db)]
+               (if (nil? c-page)
+                 empty-sec
+                 c-page)))))
 
 (re-frame/register-handler
   :current-page-update
@@ -140,16 +143,16 @@
                   (= work-type "projects")
                   (re-frame/subscribe [:projects]))
           ]
-      [:div.col-sm-12
-       ;; (println "work id is " work-id)
-       [ctg {:transitionName "example" :transitionLeave false}
+      [ctg {:transitionName "example" :transitionLeave false :transitionAppear true}
+       [:div.col-sm-12
+        ;; (println "work id is " work-id)
         (if-not (empty? work-id) 
           (let [selected-work (filterv #(= (:title_short %) work-id) @works)]
             (if-not (empty? selected-work)
-              [work-detail selected-work])))]
-       [:hr]
-       [:div.row
-        [ctg {:transitionName "example"}
+              ^{:key selected-work} [work-detail selected-work])))
+        [:hr]
+        [:div.row
+         ;; [ctg {:transitionName "example" :transitionLeave true :transitionAppear true}]
          (for [work @works]
            ^{:key work} [work-splash work work-type])]]])))
 
@@ -185,9 +188,8 @@
 (defn current-page []
   (let [current-page (re-frame/subscribe [:current-page])
         params (re-frame/subscribe [:params])]
-    (if (= @current-page nil)
-      [empty-sec]
-      [@current-page @params])))
+    [ctg {:transitionName "example" :transitionAppear true}
+     ^{:key @params} [@current-page @params]]))
 
 (defn bs-main []
   [:div.container
@@ -215,10 +217,10 @@
   (re-frame/dispatch [:initialise-db])
   (re-frame/dispatch [:load-works])
   (secretary/set-config! :prefix "#")
-  ;; (re-frame/dispatch [:current-page-update empty-sec])
-(let [h (History.)]
-  (goog.events/listen h EventType/NAVIGATE #(secretary/dispatch! (.-token %)))
-  (doto h (.setEnabled true)))
+  (re-frame/dispatch [:current-page-update empty-sec])
+  (let [h (History.)]
+    (goog.events/listen h EventType/NAVIGATE #(secretary/dispatch! (.-token %)))
+    (doto h (.setEnabled true)))
   (reagent/render-component
    (fn [][bs-main])
    (.-body js/document)))

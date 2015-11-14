@@ -8,10 +8,19 @@
 }
 
 .example-leave {
-    opacity: 0.5;
-    transition: opacity .001s ease-in;
+    opacity: 0.01;
+    transition: opacity .5s ease-out;
 }
 
 .example-leave.example-leave-active {
     opacity: 0.01;
+}
+
+.example-appear {
+  opacity: 0.01;
+  transition: opacity .5s ease-in;
+}
+
+.example-appear.example-appear-active {
+  opacity: 1.0;
 }
