@@ -9,7 +9,7 @@
 
 .example-leave {
     opacity: 0.01;
-    transition: opacity .5s ease-out;
+    transition: opacity .01s ease-out;
 }
 
 .example-leave.example-leave-active {

@@ -113,19 +113,26 @@
 
 
 (defn work-detail [work]
-  [:div.row
-   [:div.col-sm-12
-    ;; (println (re-frame/subscribe [:whole-db]))
-    [:h2 ((first work) :title)]
-    [:p ((first work) :description) ]
-    (if-not (empty? (:url (first work)))
-      [:a {:href ((first work) :url)} [:p.centeredtext ((first work) :url_text)]]
-      [:div])]
-   (for [x (vec (range ((first work) :num_img)))]
-     ^{:key x} [:div.col-sm-4.col-xs-6
-      [:a.thumbnail {:data-lightbox ((first work) :title_short) :rel "lightbox" :href (str "/img/" ((first work) :title_short) "_" x ".jpg")}
-       ;;         (.error js/console (str "hello" x))
-       [:div.ratio {:style {:background-image (str "url('/img/" ((first work) :title_short) "_" x ".jpg')")}}]]])])
+  [:div
+   [:div.row
+    [:div.col-sm-8
+     ;; (println (re-frame/subscribe [:whole-db]))
+     [:h2 ((first work) :title)]]
+    [:div.col-sm-4
+     [:h2 "Game"]]]
+   [:div.row
+    [:div.col-sm-8
+     [:p ((first work) :description) ]]
+    [:div.col-sm-4
+     (if-not (empty? (:url (first work)))
+       [:a {:href ((first work) :url)} [:p.centeredtext ((first work) :url_text)]]
+       [:div])]]
+   [:div.row
+    (for [x (vec (range ((first work) :num_img)))]
+      ^{:key x} [:div.col-sm-4.col-xs-6
+                 [:a.thumbnail {:data-lightbox ((first work) :title_short) :rel "lightbox" :href (str "/img/" ((first work) :title_short) "_" x ".jpg")}
+                  ;;         (.error js/console (str "hello" x))
+                  [:div.ratio {:style {:background-image (str "url('/img/" ((first work) :title_short) "_" x ".jpg')")}}]]])]])
 
 (defn work-splash [work work-type]
   [:div.col-sm-4.col-xs-6
@@ -146,7 +153,7 @@
       [ctg {:transitionName "example" :transitionLeave false :transitionAppear true}
        [:div.col-sm-12
         ;; (println "work id is " work-id)
-        (if-not (empty? work-id) 
+        (if-not (empty? work-id)
           (let [selected-work (filterv #(= (:title_short %) work-id) @works)]
             (if-not (empty? selected-work)
               ^{:key selected-work} [work-detail selected-work])))
@@ -170,7 +177,7 @@
   ;; (println "Dispatching on /")
   (re-frame/dispatch [:current-page-update empty-sec]))
 
-(defroute "/:work-type" {:as params} 
+(defroute "/:work-type" {:as params}
   ;; (println "Dispatching on " (:work-type params))
   (re-frame/dispatch [:params-update params])
   (if (= (:work-type params) "about")
@@ -228,6 +235,3 @@
 ;; (init!)
 
 ;; History configuration from Secretary docs
-
-
-
